@@ -1,0 +1,13 @@
+root = true
+
+# 所有文件
+[*]
+indent_style = space
+
+# C/C++ 文件编码统一
+[*.{cpp,h}]
+charset = utf-8
+
+# XML 文件
+[*.xml]
+indent_size = 2
