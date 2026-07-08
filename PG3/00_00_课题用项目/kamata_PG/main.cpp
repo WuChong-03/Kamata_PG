@@ -1,34 +1,61 @@
 #include <stdio.h>
-#include <type_traits>
 
-template <typename T1, typename T2>
-class MinClass {
+class Payment {
 public:
-	using ResultType = typename std::common_type<T1, T2>::type;
+	Payment(const char* name) : name_(name) {}
+	virtual ~Payment() {}
 
-	ResultType Min(T1 a, T2 b) {
-		if (a < b) {
-			return static_cast<ResultType>(a);
-		}
+	virtual void Pay(int price) {
+		printf("%sで%d円を支払います。\n", name_, price);
+	}
 
-		return static_cast<ResultType>(b);
+protected:
+	const char* name_;
+};
+
+class Cash : public Payment {
+public:
+	Cash() : Payment("現金") {}
+
+	void Pay(int price) override {
+		printf("%sで%d円を支払いました。おつりを確認してください。\n", name_, price);
+	}
+};
+
+class CreditCard : public Payment {
+public:
+	CreditCard() : Payment("クレジットカード") {}
+
+	void Pay(int price) override {
+		printf("%sで%d円を支払いました。サインは不要です。\n", name_, price);
+	}
+};
+
+class ElectronicMoney : public Payment {
+public:
+	ElectronicMoney() : Payment("電子マネー") {}
+
+	void Pay(int price) override {
+		printf("%sで%d円を支払いました。端末にタッチしました。\n", name_, price);
 	}
 };
 
 int main(void) {
-	MinClass<int, int> intIntMin;
-	MinClass<float, float> floatFloatMin;
-	MinClass<double, double> doubleDoubleMin;
-	MinClass<int, float> intFloatMin;
-	MinClass<int, double> intDoubleMin;
-	MinClass<float, double> floatDoubleMin;
+	Payment* payments[3];
 
-	printf("int, int: %d\n", intIntMin.Min(114, 514));
-	printf("float, float: %f\n", floatFloatMin.Min(11.4f, 51.4f));
-	printf("double, double: %f\n", doubleDoubleMin.Min(1.14, 5.14));
-	printf("int, float: %f\n", intFloatMin.Min(114, 51.4f));
-	printf("int, double: %f\n", intDoubleMin.Min(114, 5.14));
-	printf("float, double: %f\n", floatDoubleMin.Min(11.4f, 5.14));
+	payments[0] = new Cash();
+	payments[1] = new CreditCard();
+	payments[2] = new ElectronicMoney();
+
+	printf("支払い処理を開始します。\n\n");
+
+	for (int i = 0; i < 3; i++) {
+		payments[i]->Pay(1200);
+	}
+
+	for (int i = 0; i < 3; i++) {
+		delete payments[i];
+	}
 
 	return 0;
 }
