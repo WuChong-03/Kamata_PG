@@ -1,44 +1,23 @@
 #include <stdio.h>
 
-// 一般的な時給
-const int NORMAL_WAGE = 1072;
-
-// 再帰的な賃金体系の時給を求める関数
-int RecursiveWage(int hour) {
-    if (hour <= 1) {
-        return 100;
-    }
-
-    return RecursiveWage(hour - 1) * 2 - 50;
+template <typename T>
+T add(T a, T b) {
+	return a + b;
 }
 
-// 再帰的な賃金体系の合計金額を求める関数
-int RecursiveTotal(int hour) {
-    if (hour <= 1) {
-        return RecursiveWage(1);
-    }
+template <>
+float add<float>(float a, float b) {
+	return a - b;
+}
 
-    return RecursiveTotal(hour - 1) + RecursiveWage(hour);
+float add(float a, float b) {
+	return a * b;
 }
 
 int main(void) {
-    int hour = 1;
+	printf("%d\n", add<int>(114, 514));
+	printf("%f\n", add<float>(11.4f, 51.4f));
+	printf("%f\n", add(11.4f, 51.4f));
 
-    while (true) {
-        int normalTotal = NORMAL_WAGE * hour;
-        int recursiveTotal = RecursiveTotal(hour);
-
-        printf("%d時間働いた場合\n", hour);
-        printf("一般的な賃金体系：%d円\n", normalTotal);
-        printf("再帰的な賃金体系：%d円\n\n", recursiveTotal);
-
-        if (recursiveTotal > normalTotal) {
-            printf("再帰的な賃金体系のほうが儲かるのは%d時間働いたときです。\n", hour);
-            break;
-        }
-
-        hour++;
-    }
-
-    return 0;
+	return 0;
 }
