@@ -1,23 +1,30 @@
 #include <stdio.h>
 
 template <typename T>
-T add(T a, T b) {
-	return a + b;
+T Min(T a, T b) {
+	return (a < b) ? a : b;
 }
 
 template <>
-float add<float>(float a, float b) {
-	return a - b;
-}
-
-float add(float a, float b) {
-	return a * b;
+char Min<char>(char, char) {
+	printf("数字以外は代入できません\n");
+	return '\0';
 }
 
 int main(void) {
-	printf("%d\n", add<int>(114, 514));
-	printf("%f\n", add<float>(11.4f, 51.4f));
-	printf("%f\n", add(11.4f, 51.4f));
+	int intA = 114;
+	int intB = 514;
+	float floatA = 11.4f;
+	float floatB = 51.4f;
+	double doubleA = 1.14;
+	double doubleB = 5.14;
+	char charA = 'a';
+	char charB = 'b';
+
+	printf("%d\n", Min<int>(intA, intB));
+	printf("%f\n", Min<float>(floatA, floatB));
+	printf("%f\n", Min<double>(doubleA, doubleB));
+	Min<char>(charA, charB);
 
 	return 0;
 }
