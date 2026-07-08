@@ -1,60 +1,62 @@
 #include <stdio.h>
 
-class Payment {
+class IShape {
 public:
-	Payment(const char* name) : name_(name) {}
-	virtual ~Payment() {}
+	virtual ~IShape() {}
 
-	virtual void Pay(int price) {
-		printf("%sで%d円を支払います。\n", name_, price);
-	}
-
-protected:
-	const char* name_;
+	virtual void Size() = 0;
+	virtual void Draw() = 0;
 };
 
-class Cash : public Payment {
+class Circle : public IShape {
 public:
-	Cash() : Payment("現金") {}
+	Circle(double radius) : radius_(radius), area_(0.0) {}
 
-	void Pay(int price) override {
-		printf("%sで%d円を支払いました。おつりを確認してください。\n", name_, price);
+	void Size() override {
+		const double pi = 3.14;
+		area_ = radius_ * radius_ * pi;
 	}
+
+	void Draw() override {
+		printf("Circleの面積: %.2f\n", area_);
+	}
+
+private:
+	double radius_;
+	double area_;
 };
 
-class CreditCard : public Payment {
+class Rectangle : public IShape {
 public:
-	CreditCard() : Payment("クレジットカード") {}
+	Rectangle(double width, double height) : width_(width), height_(height), area_(0.0) {}
 
-	void Pay(int price) override {
-		printf("%sで%d円を支払いました。サインは不要です。\n", name_, price);
+	void Size() override {
+		area_ = width_ * height_;
 	}
-};
 
-class ElectronicMoney : public Payment {
-public:
-	ElectronicMoney() : Payment("電子マネー") {}
-
-	void Pay(int price) override {
-		printf("%sで%d円を支払いました。端末にタッチしました。\n", name_, price);
+	void Draw() override {
+		printf("Rectangleの面積: %.2f\n", area_);
 	}
+
+private:
+	double width_;
+	double height_;
+	double area_;
 };
 
 int main(void) {
-	Payment* payments[3];
+	IShape* shapes[2];
 
-	payments[0] = new Cash();
-	payments[1] = new CreditCard();
-	payments[2] = new ElectronicMoney();
+	shapes[0] = new Circle(5.0);
+	shapes[1] = new Rectangle(4.0, 6.0);
 
-	printf("支払い処理を開始します。\n\n");
-
-	for (int i = 0; i < 3; i++) {
-		payments[i]->Pay(1200);
+	for (int i = 0; i < 2; i++) {
+		shapes[i]->Size();
+		shapes[i]->Draw();
 	}
 
-	for (int i = 0; i < 3; i++) {
-		delete payments[i];
+	for (int i = 0; i < 2; i++) {
+		delete shapes[i];
 	}
 
 	return 0;
