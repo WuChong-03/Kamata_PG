@@ -1,63 +1,47 @@
 #include <stdio.h>
+#include <string.h>
 
-class IShape {
-public:
-	virtual ~IShape() {}
+#include <list>
 
-	virtual void Size() = 0;
-	virtual void Draw() = 0;
-};
+void PrintStations(const char* year, const std::list<const char*>& stations) {
+	printf("===== %s =====\n", year);
 
-class Circle : public IShape {
-public:
-	Circle(double radius) : radius_(radius), area_(0.0) {}
-
-	void Size() override {
-		const double pi = 3.14;
-		area_ = radius_ * radius_ * pi;
+	int number = 1;
+	for (std::list<const char*>::const_iterator itr = stations.begin(); itr != stations.end(); ++itr) {
+		printf("%2d: %s\n", number, *itr);
+		number++;
 	}
 
-	void Draw() override {
-		printf("Circleの面積: %.2f\n", area_);
+	printf("\n");
+}
+
+void InsertBefore(std::list<const char*>& stations, const char* target, const char* station) {
+	for (std::list<const char*>::iterator itr = stations.begin(); itr != stations.end(); ++itr) {
+		if (strcmp(*itr, target) == 0) {
+			stations.insert(itr, station);
+			return;
+		}
 	}
+}
 
-private:
-	double radius_;
-	double area_;
-};
+int main() {
+	std::list<const char*> stations1970 = {
+		"Tokyo",       "Kanda",       "Akihabara", "Okachimachi", "Ueno",    "Uguisudani",
+		"Nippori",     "Tabata",      "Komagome",  "Sugamo",      "Otsuka",  "Ikebukuro",
+		"Mejiro",      "Takadanobaba", "Shin-Okubo", "Shinjuku",    "Yoyogi",  "Harajuku",
+		"Shibuya",     "Ebisu",       "Meguro",    "Gotanda",     "Osaki",   "Shinagawa",
+		"Tamachi",     "Hamamatsucho", "Shimbashi", "Yurakucho",
+	};
 
-class Rectangle : public IShape {
-public:
-	Rectangle(double width, double height) : width_(width), height_(height), area_(0.0) {}
+	std::list<const char*> stations2019 = stations1970;
+	InsertBefore(stations2019, "Tabata", "Nishi-Nippori");
 
-	void Size() override {
-		area_ = width_ * height_;
-	}
+	std::list<const char*> stations2022 = stations2019;
+	InsertBefore(stations2022, "Tamachi", "Takanawa Gateway");
 
-	void Draw() override {
-		printf("Rectangleの面積: %.2f\n", area_);
-	}
-
-private:
-	double width_;
-	double height_;
-	double area_;
-};
-
-int main(void) {
-	IShape* shapes[2];
-
-	shapes[0] = new Circle(5.0);
-	shapes[1] = new Rectangle(4.0, 6.0);
-
-	for (int i = 0; i < 2; i++) {
-		shapes[i]->Size();
-		shapes[i]->Draw();
-	}
-
-	for (int i = 0; i < 2; i++) {
-		delete shapes[i];
-	}
+	PrintStations("1970", stations1970);
+	PrintStations("2019", stations2019);
+	PrintStations("2022", stations2022);
 
 	return 0;
 }
