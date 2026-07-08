@@ -1,30 +1,43 @@
 #include <stdio.h>
 
-template <typename T>
-T Min(T a, T b) {
-	return (a < b) ? a : b;
+int NormalTotalWage(int hour) {
+	return 1072 * hour;
 }
 
-template <>
-char Min<char>(char, char) {
-	printf("数字以外は代入できません\n");
-	return '\0';
+int RecursiveHourlyWage(int hour) {
+	if (hour <= 1) {
+		return 100;
+	}
+
+	return RecursiveHourlyWage(hour - 1) * 2 - 50;
+}
+
+int RecursiveTotalWage(int hour) {
+	if (hour <= 0) {
+		return 0;
+	}
+
+	return RecursiveTotalWage(hour - 1) + RecursiveHourlyWage(hour);
 }
 
 int main(void) {
-	int intA = 114;
-	int intB = 514;
-	float floatA = 11.4f;
-	float floatB = 51.4f;
-	double doubleA = 1.14;
-	double doubleB = 5.14;
-	char charA = 'a';
-	char charB = 'b';
+	int hour = 1;
 
-	printf("%d\n", Min<int>(intA, intB));
-	printf("%f\n", Min<float>(floatA, floatB));
-	printf("%f\n", Min<double>(doubleA, doubleB));
-	Min<char>(charA, charB);
+	printf("hour normal recursive\n");
+
+	while (1) {
+		int normalTotal = NormalTotalWage(hour);
+		int recursiveTotal = RecursiveTotalWage(hour);
+
+		printf("%2d %6d %9d\n", hour, normalTotal, recursiveTotal);
+
+		if (recursiveTotal > normalTotal) {
+			printf("\n%d時間働くと、再帰的な賃金体系のほうが儲かります。\n", hour);
+			break;
+		}
+
+		hour++;
+	}
 
 	return 0;
 }
