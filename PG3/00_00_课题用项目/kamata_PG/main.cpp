@@ -1,47 +1,27 @@
-#include <stdio.h>
-#include <string.h>
+#include <functional>
+#include <iostream>
+#include <thread>
 
-#include <list>
-
-void PrintStations(const char* year, const std::list<const char*>& stations) {
-	printf("===== %s =====\n", year);
-
-	int number = 1;
-	for (std::list<const char*>::const_iterator itr = stations.begin(); itr != stations.end(); ++itr) {
-		printf("%2d: %s\n", number, *itr);
-		number++;
-	}
-
-	printf("\n");
+void PrintThread1() {
+	std::cout << "thread 1" << std::endl;
 }
 
-void InsertBefore(std::list<const char*>& stations, const char* target, const char* station) {
-	for (std::list<const char*>::iterator itr = stations.begin(); itr != stations.end(); ++itr) {
-		if (strcmp(*itr, target) == 0) {
-			stations.insert(itr, station);
-			return;
-		}
-	}
+void PrintThread2(std::thread& previousThread) {
+	previousThread.join();
+	std::cout << "thread 2" << std::endl;
+}
+
+void PrintThread3(std::thread& previousThread) {
+	previousThread.join();
+	std::cout << "thread 3" << std::endl;
 }
 
 int main() {
-	std::list<const char*> stations1970 = {
-		"Tokyo",       "Kanda",       "Akihabara", "Okachimachi", "Ueno",    "Uguisudani",
-		"Nippori",     "Tabata",      "Komagome",  "Sugamo",      "Otsuka",  "Ikebukuro",
-		"Mejiro",      "Takadanobaba", "Shin-Okubo", "Shinjuku",    "Yoyogi",  "Harajuku",
-		"Shibuya",     "Ebisu",       "Meguro",    "Gotanda",     "Osaki",   "Shinagawa",
-		"Tamachi",     "Hamamatsucho", "Shimbashi", "Yurakucho",
-	};
+	std::thread thread1(PrintThread1);
+	std::thread thread2(PrintThread2, std::ref(thread1));
+	std::thread thread3(PrintThread3, std::ref(thread2));
 
-	std::list<const char*> stations2019 = stations1970;
-	InsertBefore(stations2019, "Tabata", "Nishi-Nippori");
-
-	std::list<const char*> stations2022 = stations2019;
-	InsertBefore(stations2022, "Tamachi", "Takanawa Gateway");
-
-	PrintStations("1970", stations1970);
-	PrintStations("2019", stations2019);
-	PrintStations("2022", stations2022);
+	thread3.join();
 
 	return 0;
 }
